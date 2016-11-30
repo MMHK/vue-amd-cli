@@ -4,6 +4,8 @@ var prompt = require('prompt')
 var colors = require('colors/safe')
 var path = require('path')
 var template = require('lodash.template')
+var git_download = require('download-git-repo')
+var bower = require('bower')
 
 require.extensions['.tpl'] = function (module, filename) {
   var tmp = ''
@@ -26,12 +28,48 @@ var ROOT_DIR = process.cwd(),
 prompt.message = colors.green('AMD-VUE')
 prompt.delimiter = colors.green('>>')
 
-//
-// Start the prompt
-//
-prompt.start()
+if (fs.existsSync(path.join(ROOT_DIR, 'package.json'))) {
+  //
+  // Start the prompt
+  //
+  prompt.start()
 
-init()
+  init()
+} else {
+  install()
+}
+
+function install () {
+  prompt.get({
+    properties: {
+      project_name: {
+        description: colors.green('\n 请输入项目名')
+      }
+    }
+  }, function (err, result) {
+    if (err) {
+      console.log(err)
+    }
+    git_download('MMHK/vue-amd-template', '.', { clone: false }, function (err) {
+      if (err) {
+        console.error(err)
+        return
+      }
+      replaceFile(path.join(ROOT_DIR, 'readme.md.tpl'), {'project_name': result.project_name})
+      replaceFile(path.join(ROOT_DIR, 'package.json.tpl'), {'project_name': result.project_name})
+      replaceFile(path.join(ROOT_DIR, 'index.html.tpl'), {'project_name': result.project_name})
+      replaceFile(path.join(ROOT_DIR, 'bower.json.tpl'), { 'project_name': result.project_name })
+
+      bower.commands
+        .install([], { production: true, save: false }, { interactive: true })
+        .on('end', function (installed) {
+          console.log(installed)
+        })
+    })
+  })
+
+  prompt.start()
+}
 
 function init () {
   prompt.get({
@@ -65,6 +103,18 @@ function saveFile (filename, content) {
       fs.mkdirSync(dir)
     }
     fs.writeFileSync(filename, content)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+function replaceFile (template_name, args) {
+  try {
+    var file = fs.readFileSync(template_name, 'utf8'),
+      distFile = template_name.replace('.tpl', ''),
+      temp = template(file)(args)
+    saveFile(distFile, temp)
+    fs.unlinkSync(template_name)
   } catch (e) {
     console.error(e)
   }

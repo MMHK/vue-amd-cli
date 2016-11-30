@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/MMHK/vue-amd-cli#readme",
   "dependencies": {
+    "bower": "^1.8.0",
     "color": "^0.11.4",
+    "download-git-repo": "^0.2.1",
     "lodash.template": "^4.4.0",
     "prompt": "^1.0.0"
   }
