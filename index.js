@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var fs = require('fs')
 var process = require('process')
 var prompt = require('prompt')
@@ -23,10 +25,10 @@ var ROOT_DIR = process.cwd(),
     css: require('./template/css.tpl'),
     service: template(require('./template/service.tpl')),
     js: template(require('./template/js.tpl'))
-}
+  }
 
-prompt.message = colors.green('AMD-VUE')
-prompt.delimiter = colors.green('>>')
+prompt.message = colors.green('vue-amd-cli')
+prompt.delimiter = colors.green('#')
 
 if (fs.existsSync(path.join(ROOT_DIR, 'package.json'))) {
   //
@@ -39,7 +41,7 @@ if (fs.existsSync(path.join(ROOT_DIR, 'package.json'))) {
   install()
 }
 
-function install () {
+function install() {
   prompt.get({
     properties: {
       project_name: {
@@ -50,18 +52,33 @@ function install () {
     if (err) {
       console.log(err)
     }
-    git_download('MMHK/vue-amd-template', '.', { clone: false }, function (err) {
+    git_download('MMHK/vue-amd-template', '.', {
+      clone: false
+    }, function (err) {
       if (err) {
         console.error(err)
         return
       }
-      replaceFile(path.join(ROOT_DIR, 'readme.md.tpl'), {'project_name': result.project_name})
-      replaceFile(path.join(ROOT_DIR, 'package.json.tpl'), {'project_name': result.project_name})
-      replaceFile(path.join(ROOT_DIR, 'index.html.tpl'), {'project_name': result.project_name})
-      replaceFile(path.join(ROOT_DIR, 'bower.json.tpl'), { 'project_name': result.project_name })
+      replaceFile(path.join(ROOT_DIR, 'readme.md.tpl'), {
+        'project_name': result.project_name
+      })
+      replaceFile(path.join(ROOT_DIR, 'package.json.tpl'), {
+        'project_name': result.project_name
+      })
+      replaceFile(path.join(ROOT_DIR, 'index.html.tpl'), {
+        'project_name': result.project_name
+      })
+      replaceFile(path.join(ROOT_DIR, 'bower.json.tpl'), {
+        'project_name': result.project_name
+      })
 
       bower.commands
-        .install([], { production: true, save: false }, { interactive: true })
+        .install([], {
+          production: true,
+          save: false
+        }, {
+          interactive: true
+        })
         .on('end', function (installed) {
           console.log(installed)
         })
@@ -71,7 +88,7 @@ function install () {
   prompt.start()
 }
 
-function init () {
+function init() {
   prompt.get({
     properties: {
       type: {
@@ -96,7 +113,7 @@ function init () {
   })
 }
 
-function saveFile (filename, content) {
+function saveFile(filename, content) {
   var dir = path.dirname(filename)
   try {
     if (!fs.existsSync(dir)) {
@@ -108,7 +125,7 @@ function saveFile (filename, content) {
   }
 }
 
-function replaceFile (template_name, args) {
+function replaceFile(template_name, args) {
   try {
     var file = fs.readFileSync(template_name, 'utf8'),
       distFile = template_name.replace('.tpl', ''),
@@ -120,7 +137,7 @@ function replaceFile (template_name, args) {
   }
 }
 
-function page (name) {
+function page(name) {
   var fullpath = 'page/' + name
 
   if (fs.existsSync(path.join(ROOT_DIR, fullpath + '.js'))) {
@@ -137,7 +154,7 @@ function page (name) {
   console.log(colors.green('创建page:' + fullpath + ' 成功！'))
 }
 
-function component (name) {
+function component(name) {
   var fullpath = 'component/' + name
 
   if (fs.existsSync(path.join(ROOT_DIR, fullpath + '.js'))) {
@@ -154,7 +171,7 @@ function component (name) {
   console.log(colors.green('创建 component:' + fullpath + ' 成功！'))
 }
 
-function service (name) {
+function service(name) {
   var fullpath = 'service/' + name
 
   if (fs.existsSync(path.join(ROOT_DIR, fullpath + '.js'))) {
