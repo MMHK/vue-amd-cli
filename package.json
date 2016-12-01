@@ -1,6 +1,6 @@
 {
     "name": "vue-amd-cli",
-    "version": "1.7.0",
+    "version": "1.8.0",
     "description": "Create Vue Project By AMD way tools",
     "main": "index.js",
     "scripts": {

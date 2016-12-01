@@ -79,8 +79,13 @@ function install() {
         }, {
           interactive: true
         })
+        .on("log", function (args) {
+          if (args.level == "action" && args.id == "install") {
+            console.log("%s...安装中...", args.message);
+          }
+        })
         .on('end', function (installed) {
-          console.log(installed)
+          console.log("安装成功！")
         })
     })
   })
