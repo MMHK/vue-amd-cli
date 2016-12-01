@@ -1,4 +1,4 @@
-define("service/<%= filebase %>", [
+define("<%= filebase %>", [
     "vue", 
     "vue-resource", 
     "promise"
