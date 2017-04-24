@@ -4,6 +4,8 @@ define("<%= filebase %>", [
     "promise"
 ], function(Vue, http, _promise) {
     'use strict';
+    
+    _promise.polyfill();
 
     Vue.use(http);
 
